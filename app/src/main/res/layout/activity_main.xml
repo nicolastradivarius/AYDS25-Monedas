@@ -22,7 +22,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rate de Moneda:"
+        android:text="Precio del Bitcoin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/textPrecio"
         app:layout_constraintHorizontal_bias="0.316"

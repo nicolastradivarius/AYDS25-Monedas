@@ -1,35 +1,28 @@
 package com.example.preparcialayd.A
 
-import B.DataRepo
-import B.PriceObserver
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.preparcialayd.B.SomeClass
 import com.example.preparcialayd.R
 
-class MainScreen : AppCompatActivity(), PriceObserver {
-    private val repo = DataRepo(this)
+class MainScreen : AppCompatActivity() {
+    private val dependency = SomeClass(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        dependency.observer.subscribe { result ->
+            onPrice(result.first, result.second)
         }
-        repo.addObserver(this)
 
         val spinner = findViewById<Spinner>(R.id.spinnerMonedas)
-        val monedas = listOf("USD", "ARS", "CAD", "BTC")
+        val monedas = listOf("USD", "EUR", "CAD", "JPY")
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, monedas)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -38,7 +31,7 @@ class MainScreen : AppCompatActivity(), PriceObserver {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val monedaSeleccionada = monedas[position]
-                repo.fetchPrice(monedaSeleccionada)
+                dependency.fetchPrice(monedaSeleccionada)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -46,10 +39,10 @@ class MainScreen : AppCompatActivity(), PriceObserver {
 
     }
 
-    override fun onPrice(symbol: String, price: Double) {
+    fun onPrice(symbol: String, price: Int) {
         val mensaje = "$symbol – $price"
         runOnUiThread {
-        findViewById<TextView>(R.id.textPrecio).text = "$symbol – $price"
+            findViewById<TextView>(R.id.textPrecio).text = mensaje
         }
     }
 }
