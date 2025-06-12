@@ -1,4 +1,4 @@
-package com.example.preparcialayd.A
+package com.example.preparcialayd.view
 
 import android.os.Bundle
 import android.view.View
@@ -7,17 +7,17 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.preparcialayd.B.SomeClass
+import com.example.preparcialayd.presenter.CryptoPresenterImpl
 import com.example.preparcialayd.R
 
-class MainScreen : AppCompatActivity() {
-    private lateinit var dependency: SomeClass
+class CryptoView : AppCompatActivity() {
+    private lateinit var dependency: CryptoPresenterImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        dependency = SomeClass(this)
+        dependency = CryptoPresenterImpl(this)
         dependency.observer.subscribe { result ->
             onPrice(result.first, result.second)
         }

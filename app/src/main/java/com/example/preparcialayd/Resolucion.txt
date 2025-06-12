@@ -1,0 +1,43 @@
+1.
+MainScreen: tiene una dependencia directa de SomeClass (porque la instancia). Cuando se hace click
+en un item del spinner, se invocan servicios de SomeClass.
+Ademas, cuando se crea, inmediatamente se suscribe al observable de SomeClass para actualizar la UI
+del precio.
+Esta clase tiene logica de vista.
+
+SomeClass: expone un Observable y tiene una dependencia directa de DataRepo. Cuando esta clase
+invoca servicios de DataRepo, se realiza la notificacion a los observadores que esten suscritos
+al observable expuesto.
+Esta clase actua como intermediario entre MainScreen y DataRepo, buscando la informacion y
+enviandola a la clase encargada de renderizarla, por lo que contiene la logica de negocio.
+
+DataRepo: no tiene dependencias. Maneja toda la logica de datos.
+
+Si se hace click en un item del spinner en MainScreen, se invoca el servicio fetchPrice de
+SomeClass, el cual llama al servicio fetchPrice de DataRepo y espera por el resultado. Cuando
+lo tiene, notifica a MainScreen a traves de su observador, con lo cual no la conoce en detalle.
+
+Teniendo en cuenta el flujo de datos y las dependencias, se puede afirmar que el proyecto sigue
+el patron MVP, siendo MainScreen = Vista, SomeClass = Presenter, DataRepo = parte del Model.
+
+2. Violaciones a los patrones de disenio SOLID:
+
+Por parte de DataRepo (renombrada a CryptoRepositoryImpl):
+    - SRP: esta clase maneja dos responsabilidades, el acceso al almacenamiento local (a traves
+    de sharedpreferences) y la obtencion de datos desde una API externa. Mezcla persistencia local
+    con logica de red.
+    - DIP: en la linea 20 crea una instancia de la API, en lugar de depender de una interfaz.
+Es preferible separar las dos responsabilidades en dos clases que se incorporen como dependencias
+a traves del constructor.
+
+Por parte de ApiY (renombrada a FreeCryptoAPI):
+    - SRP: esta clase maneja dos responsabilidades, la obtencion de datos en Internet, el parseo
+    de esos datos JSON de response para obtener el precio de la criptomoneda segun el simbolo.
+    Tendria que haber diferentes metodos encargados de esto.
+
+Por parte de SomeClass (renombrada a CryptoPresenter):
+    - DIP: en la linea 11 se instancia a DataRepo directamente, en lugar de usar una interfaz.
+
+Por parte de MainScreen (renombrada a CryptoView):
+    - SRP: a nivel de metodo, onCreate se encarga tanto de la inicializacion de la clase como
+    del manejo de la logica de vista (con el spinner)
