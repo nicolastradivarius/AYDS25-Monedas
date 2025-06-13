@@ -10,6 +10,7 @@ interface CryptoPresenter {
     val presenterObservable: Observable<Pair<String, Int>>
 
     fun fetchPrice(monedaSeleccionada: String)
+    fun getMonedas(): List<String>
 }
 
 class CryptoPresenterImpl(
@@ -25,5 +26,9 @@ class CryptoPresenterImpl(
                 presenterObservable.notify(Pair(monedaSeleccionada, it.roundToInt()))
             }
         }
+    }
+
+    override fun getMonedas(): List<String> {
+        return repository.getSymbols()
     }
 }

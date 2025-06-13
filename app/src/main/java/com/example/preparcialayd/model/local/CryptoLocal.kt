@@ -1,6 +1,5 @@
 package com.example.preparcialayd.model.local
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
@@ -10,9 +9,8 @@ interface CryptoLocal {
 }
 
 class CryptoLocalImpl(
-    context: Context
+    private val sharedPreferences: SharedPreferences
 ): CryptoLocal {
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE)
 
     override fun getPrice(symbol: String): String? {
         return sharedPreferences.getString(symbol, null)

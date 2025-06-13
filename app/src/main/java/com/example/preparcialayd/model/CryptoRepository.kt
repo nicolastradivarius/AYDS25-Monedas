@@ -5,6 +5,7 @@ import com.example.preparcialayd.model.local.CryptoLocal
 
 interface CryptoRepository {
     fun fetchPrice(symbol: String): Double
+    fun getSymbols(): List<String>
 }
 
 class CryptoRepositoryImpl(
@@ -12,6 +13,7 @@ class CryptoRepositoryImpl(
     private val cryptoExternal: CryptoExternal
 ): CryptoRepository {
 
+    val simbolosMonedas = listOf("USD", "EUR", "CAD", "JPY", "RUB", "GBP", "KRW", "PLN")
 
     override fun fetchPrice(symbol: String): Double {
         var cachedPrice = cryptoLocal.getPrice(symbol)
@@ -28,5 +30,9 @@ class CryptoRepositoryImpl(
         }
 
         return price
+    }
+
+    override fun getSymbols(): List<String> {
+        return simbolosMonedas
     }
 }
