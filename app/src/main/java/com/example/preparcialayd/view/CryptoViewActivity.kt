@@ -11,7 +11,15 @@ import com.example.preparcialayd.R
 import com.example.preparcialayd.injector.CryptoInjector
 import com.example.preparcialayd.presenter.CryptoPresenter
 
-class CryptoView : AppCompatActivity() {
+interface CryptoView {
+    val uiState: CryptoUIState
+    fun updatePrice()
+}
+
+class CryptoViewActivity : AppCompatActivity(), CryptoView {
+
+    override var uiState: CryptoUIState = CryptoUIState()
+
     private lateinit var cryptoPresenter: CryptoPresenter
     private lateinit var spinner: Spinner
     private lateinit var adapter: ArrayAdapter<String>
@@ -54,15 +62,22 @@ class CryptoView : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        cryptoPresenter.presenterObservable.subscribe { result ->
-            onPrice(result.first, result.second)
+        cryptoPresenter.presenterObservable.subscribe { uiState ->
+            updateUIState(uiState)
+            updatePrice()
         }
     }
 
-    fun onPrice(symbol: String, price: Int) {
-        val mensaje = "$symbol – $price"
+    private fun updateUIState(state: CryptoUIState) {
+        uiState = state.copy(
+            symbol = state.symbol,
+            price = state.price
+        )
+    }
+
+    override fun updatePrice() {
         runOnUiThread {
-            textPrecio.text = mensaje
+            textPrecio.text = uiState.symbol + " - " + uiState.price.toString()
         }
     }
 }

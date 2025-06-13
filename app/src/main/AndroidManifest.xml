@@ -15,7 +15,7 @@
         android:theme="@style/Theme.PreParcialAyD"
         tools:targetApi="31">
         <activity
-            android:name=".view.CryptoView"
+            android:name=".view.CryptoViewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
